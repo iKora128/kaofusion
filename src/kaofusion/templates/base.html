@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dim">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .dropzone {
+            border: 2px dashed oklch(var(--bc) / 0.2);
+            transition: all 0.25s ease;
+            background: oklch(var(--b2) / 0.5);
+        }
+        .dropzone:hover, .dropzone.dragover {
+            border-color: oklch(var(--p));
+            background: oklch(var(--p) / 0.08);
+            transform: scale(1.01);
+        }
+        .preview-image {
+            max-height: 280px;
+            object-fit: contain;
+        }
+        .glass-subtle {
+            background: oklch(var(--b2) / 0.6);
+            backdrop-filter: blur(12px);
+        }
+        .gradient-border {
+            position: relative;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, oklch(var(--p) / 0.3), oklch(var(--s) / 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-base-300">
+    <div class="navbar bg-base-100 sticky top-0 z-50 shadow-lg">
+        <div class="navbar-start">
+            <a href="/" class="btn btn-ghost gap-2 text-xl font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="5"/>
+                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                </svg>
+                {{ app_name }}
+            </a>
+        </div>
+        <div class="navbar-end gap-2">
+            <div class="badge badge-primary badge-outline gap-1">
+                <span class="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+                Online
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-4 py-8 max-w-7xl">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer footer-center p-6 bg-base-200 text-base-content/60">
+        <aside>
+            <p class="text-sm">{{ app_name }} &mdash; AI-Powered Face Swap</p>
+        </aside>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
