@@ -10,7 +10,11 @@ import cv2
 import numpy as np
 
 from kaofusion.processing.helper import paste_back, warp_face
-from kaofusion.processing.masker import create_box_mask, create_face_mask
+from kaofusion.processing.masker import (
+    create_box_mask,
+    create_face_mask,
+    create_mouth_exclusion_mask,
+)
 from kaofusion.processing.models import ModelManager, get_model_manager
 from kaofusion.processing.types import (
     Embedding,
@@ -161,6 +165,18 @@ class FaceSwapper:
                 blur=self.mask_blur,
                 padding=self.mask_padding,
             )
+
+        if config.preserve_mouth:
+            mouth_landmarks = target_face.landmarks.sixty_eight
+            if mouth_landmarks is not None:
+                mouth_mask = create_mouth_exclusion_mask(
+                    spec.size,
+                    mouth_landmarks,
+                    affine_matrix,
+                )
+                mask = np.minimum(mask, mouth_mask)
+            else:
+                logger.warning("preserve_mouth enabled but 68-point landmarks missing; skipping mouth mask")
 
         # Prepare source embedding
         source_embedding = self._prepare_embedding(

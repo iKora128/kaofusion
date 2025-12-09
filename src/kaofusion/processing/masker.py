@@ -8,8 +8,9 @@ import logging
 import cv2
 import numpy as np
 
+from kaofusion.processing.helper import transform_points
 from kaofusion.processing.models import ModelManager, get_model_manager
-from kaofusion.processing.types import Mask, VisionFrame
+from kaofusion.processing.types import AffineMatrix, Landmarks68, Mask, VisionFrame
 
 logger = logging.getLogger(__name__)
 
@@ -165,3 +166,44 @@ def create_face_mask(
         return np.ones((h, w), dtype=np.float32)
 
     return combine_masks(*masks)
+
+
+def create_mouth_exclusion_mask(
+    size: tuple[int, int],
+    landmarks_68: Landmarks68,
+    warp_matrix: AffineMatrix,
+    feather_fraction: float = 0.05,
+) -> Mask:
+    """Create a mask that removes the mouth region from blending.
+
+    Args:
+        size: Target mask size (width, height)
+        landmarks_68: 68-point landmarks in the original image space
+        warp_matrix: Affine matrix used to warp the face into canonical space
+        feather_fraction: Feather amount relative to min(size)
+
+    Returns:
+        Mask with zeros over the mouth region and ones elsewhere
+    """
+    w, h = size
+    mask = np.ones((h, w), dtype=np.float32)
+
+    if landmarks_68.shape[0] < 68:
+        return mask
+
+    # Transform mouth landmarks to warped face space
+    mouth_points = transform_points(landmarks_68[48:68], warp_matrix)
+    mouth_points = np.round(mouth_points).astype(np.int32)
+    mouth_points[:, 0] = np.clip(mouth_points[:, 0], 0, w - 1)
+    mouth_points[:, 1] = np.clip(mouth_points[:, 1], 0, h - 1)
+
+    # Zero out the mouth area
+    cv2.fillPoly(mask, [mouth_points], 0.0)
+
+    # Feather edges for smoother blending
+    if feather_fraction > 0:
+        sigma = max(1, int(min(w, h) * feather_fraction))
+        mask = cv2.GaussianBlur(mask, (0, 0), sigma)
+        mask = np.clip(mask, 0, 1)
+
+    return mask

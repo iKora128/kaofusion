@@ -86,6 +86,7 @@ def _schema_to_config(schema: SwapConfigSchema | None) -> SwapConfig:
         face_selector_indices=schema.face_selector_indices,
         mask_types=mask_types,
         mask_blur=schema.mask_blur,
+        preserve_mouth=schema.preserve_mouth,
         mask_padding=schema.mask_padding,
         output_format=output_format,
         output_quality=schema.output_quality,

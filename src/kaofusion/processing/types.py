@@ -231,6 +231,7 @@ class SwapConfig:
     )
     mask_blur: float = 0.3
     mask_padding: tuple[int, int, int, int] = (0, 0, 0, 0)  # top, right, bottom, left
+    preserve_mouth: bool = False  # Keep target mouth area when True
 
     # Output settings
     output_format: OutputFormat = OutputFormat.PNG

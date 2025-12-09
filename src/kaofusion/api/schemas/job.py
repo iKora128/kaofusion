@@ -161,6 +161,10 @@ class SwapConfigSchema(BaseModel):
         le=1.0,
         description="Mask edge blur amount",
     )
+    preserve_mouth: bool = Field(
+        default=False,
+        description="Keep target mouth area instead of swapping it",
+    )
     mask_padding: tuple[int, int, int, int] = Field(
         default=(0, 0, 0, 0),
         description="Mask padding (top, right, bottom, left) as percentages",

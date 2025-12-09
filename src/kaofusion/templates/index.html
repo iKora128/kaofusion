@@ -89,16 +89,7 @@
                         <img id="target-image" class="preview-image rounded-lg shadow-lg mx-auto" src="" alt="Target">
                         <p id="target-filename" class="text-sm mt-3 text-base-content/60"></p>
                     </div>
-                    <div id="target-video-preview" class="hidden text-center space-y-2">
-                        <div class="w-16 h-16 mx-auto rounded-full bg-secondary/10 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.26a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <p class="font-medium">動画を選択済み</p>
-                        <p id="target-video-meta" class="text-sm text-base-content/60"></p>
-                    </div>
+                    <div id="target-video-preview" class="hidden w-full"></div>
                     <div id="target-placeholder" class="space-y-3">
                         <div class="w-16 h-16 mx-auto rounded-full bg-secondary/10 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,6 +122,97 @@
                             <button class="btn btn-xs btn-ghost" onclick="deselectAllFaces()">選択解除</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Frame Preview Section -->
+    <div id="video-frame-section" class="card bg-base-100 shadow-xl hidden">
+        <div class="card-body">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    フレームプレビュー
+                </h2>
+                <span class="badge badge-info">動画処理前にテスト</span>
+            </div>
+            <p class="text-sm text-base-content/60 mb-4">動画のフレームを選んで、スワップ結果をプレビューできます。</p>
+
+            <!-- Video Player -->
+            <div class="bg-base-200 rounded-xl p-4">
+                <video id="preview-video" class="w-full max-h-[400px] rounded-lg mx-auto" controls>
+                    お使いのブラウザは動画再生に対応していません。
+                </video>
+
+                <!-- Frame Capture Controls -->
+                <div class="mt-4 space-y-3">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium min-w-[80px]">現在位置:</span>
+                        <input type="range" id="video-seek" min="0" max="100" value="0" step="0.1"
+                               class="range range-info range-sm flex-1" oninput="seekVideo(this.value)">
+                        <span id="video-time" class="text-sm font-mono min-w-[100px] text-right">0:00 / 0:00</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <button class="btn btn-sm btn-outline" onclick="seekRelative(-10)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
+                            </svg>
+                            -10秒
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="seekRelative(-1)">-1秒</button>
+                        <button class="btn btn-sm btn-outline" onclick="stepFrame(-1)">-1フレーム</button>
+                        <button class="btn btn-sm btn-ghost" onclick="togglePlayPause()">
+                            <span id="play-pause-icon">▶</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="stepFrame(1)">+1フレーム</button>
+                        <button class="btn btn-sm btn-outline" onclick="seekRelative(1)">+1秒</button>
+                        <button class="btn btn-sm btn-outline" onclick="seekRelative(10)">
+                            +10秒
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Capture Button -->
+            <div class="flex justify-center mt-4">
+                <button id="capture-btn" class="btn btn-info btn-lg gap-2" onclick="captureAndPreview()">
+                    <span id="capture-loading" class="loading loading-spinner loading-sm hidden"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    このフレームでテスト
+                </button>
+            </div>
+
+            <!-- Frame Preview Result -->
+            <div id="frame-preview-result" class="hidden mt-6">
+                <div class="divider">プレビュー結果</div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <p class="text-sm text-base-content/60 mb-2">元のフレーム</p>
+                        <img id="frame-original" class="rounded-lg shadow-lg mx-auto max-h-[300px]" src="" alt="Original Frame">
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-base-content/60 mb-2">スワップ後</p>
+                        <img id="frame-swapped" class="rounded-lg shadow-lg mx-auto max-h-[300px]" src="" alt="Swapped Frame">
+                    </div>
+                </div>
+                <div class="flex justify-center gap-3 mt-4">
+                    <button class="btn btn-outline btn-sm" onclick="hideFramePreview()">閉じる</button>
+                    <button class="btn btn-success btn-sm gap-1" onclick="proceedWithVideo()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        この設定で動画を処理
+                    </button>
                 </div>
             </div>
         </div>
@@ -304,6 +386,15 @@
                     </div>
                 </div>
 
+                <!-- Mouth Preserve -->
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        <input type="checkbox" id="preserve-mouth" class="checkbox checkbox-sm">
+                        <span class="label-text font-medium">口は元のままにする</span>
+                    </label>
+                    <label class="label"><span class="label-text-alt">違和感が出やすい口周りをスワップから除外</span></label>
+                </div>
+
                 <!-- Output Format -->
                 <div class="form-control">
                     <label class="label"><span class="label-text font-medium">出力形式</span></label>
@@ -459,6 +550,10 @@
     let detectedFaces = [];  // Array of detected face data
     let selectedFaceIndices = new Set();  // Set of selected face indices
 
+    // Video preview state
+    let videoFile = null;
+    let videoFps = 30;  // Default FPS, will be estimated
+
     // Step management
     function updateSteps() {
         const steps = ['source', 'target', 'process', 'done'];
@@ -547,6 +642,7 @@
             face_selector_mode: document.getElementById('face-selector-mode').value,
             mask_types: maskTypes,
             mask_blur: parseFloat(document.getElementById('mask-blur').value),
+            preserve_mouth: document.getElementById('preserve-mouth').checked,
             swap_weight: parseFloat(document.getElementById('swap-weight').value),
             output_format: document.getElementById('output-format').value,
             output_quality: parseInt(document.getElementById('output-quality').value),
@@ -784,12 +880,29 @@
         }
 
         if (isVideo && type === 'target') {
+            // Store video file for preview
+            videoFile = file;
+
+            // Show compact video indicator in dropzone
             document.getElementById('target-preview').classList.add('hidden');
             document.getElementById('target-placeholder').classList.add('hidden');
             document.getElementById('target-video-preview').classList.remove('hidden');
-            const metaText = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
-            document.getElementById('target-video-meta').textContent = metaText;
+            document.getElementById('target-video-preview').innerHTML = `
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-secondary/10 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.26a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <p class="font-medium text-sm">${file.name}</p>
+                    <p class="text-xs text-base-content/60">${(file.size / (1024 * 1024)).toFixed(1)} MB</p>
+                </div>
+            `;
             document.getElementById('target-image').src = '';
+
+            // Setup video preview player
+            setupVideoPreview(file);
         } else {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -843,8 +956,10 @@
                 // Detect faces in target image (not for video)
                 if (targetMediaType === 'image') {
                     detectFaces(targetId);
+                    hideVideoFrameSection();
                 } else {
                     hideFaceSelection();
+                    showVideoFrameSection();
                 }
             }
 
@@ -1053,9 +1168,214 @@
         hideError();
         hideSourceFaces();
         hideFaceSelection();
+        hideVideoFrameSection();
+        videoFile = null;
         updateSwapButton();
         toggleVideoOptions();
         updateSteps();
+    }
+
+    // ========================================
+    // Video Frame Preview Functions
+    // ========================================
+
+    function setupVideoPreview(file) {
+        const video = document.getElementById('preview-video');
+        const videoUrl = URL.createObjectURL(file);
+        video.src = videoUrl;
+
+        video.onloadedmetadata = () => {
+            // Update time display
+            updateVideoTimeDisplay();
+            // Estimate FPS (common values)
+            videoFps = 30; // Default, could be improved with actual detection
+        };
+
+        video.ontimeupdate = () => {
+            if (!video.seeking) {
+                const percent = (video.currentTime / video.duration) * 100;
+                document.getElementById('video-seek').value = percent;
+                updateVideoTimeDisplay();
+            }
+        };
+
+        video.onplay = () => {
+            document.getElementById('play-pause-icon').textContent = '⏸';
+        };
+
+        video.onpause = () => {
+            document.getElementById('play-pause-icon').textContent = '▶';
+        };
+    }
+
+    function showVideoFrameSection() {
+        document.getElementById('video-frame-section').classList.remove('hidden');
+    }
+
+    function hideVideoFrameSection() {
+        document.getElementById('video-frame-section').classList.add('hidden');
+        document.getElementById('frame-preview-result').classList.add('hidden');
+        const video = document.getElementById('preview-video');
+        video.pause();
+        video.src = '';
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateVideoTimeDisplay() {
+        const video = document.getElementById('preview-video');
+        const current = formatTime(video.currentTime);
+        const total = formatTime(video.duration || 0);
+        document.getElementById('video-time').textContent = `${current} / ${total}`;
+    }
+
+    function seekVideo(percent) {
+        const video = document.getElementById('preview-video');
+        if (video.duration) {
+            video.currentTime = (percent / 100) * video.duration;
+            updateVideoTimeDisplay();
+        }
+    }
+
+    function seekRelative(seconds) {
+        const video = document.getElementById('preview-video');
+        video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+        updateVideoTimeDisplay();
+    }
+
+    function stepFrame(direction) {
+        const video = document.getElementById('preview-video');
+        const frameTime = 1 / videoFps;
+        video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (direction * frameTime)));
+        updateVideoTimeDisplay();
+    }
+
+    function togglePlayPause() {
+        const video = document.getElementById('preview-video');
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+
+    async function captureAndPreview() {
+        if (!sourceId) {
+            showError('先にソース画像をアップロードしてください');
+            return;
+        }
+
+        const video = document.getElementById('preview-video');
+        const captureBtn = document.getElementById('capture-btn');
+        const captureLoading = document.getElementById('capture-loading');
+
+        // Pause video for clean capture
+        video.pause();
+
+        // Show loading state
+        captureBtn.disabled = true;
+        captureLoading.classList.remove('hidden');
+
+        try {
+            // Capture frame to canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Show original frame
+            const originalDataUrl = canvas.toDataURL('image/png');
+            document.getElementById('frame-original').src = originalDataUrl;
+
+            // Convert to blob and upload
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            const formData = new FormData();
+            formData.append('file', blob, 'frame.png');
+
+            // Upload frame
+            const uploadResponse = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error('フレームのアップロードに失敗しました');
+            }
+
+            const uploadData = await uploadResponse.json();
+            const frameId = uploadData.id;
+
+            // Execute preview swap
+            const config = getConfig();
+            // Force image output for preview
+            delete config.video;
+
+            const swapResponse = await fetch('/api/swap', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    source_id: sourceId,
+                    target_id: frameId,
+                    config: config
+                })
+            });
+
+            if (!swapResponse.ok) {
+                throw new Error('プレビュー処理に失敗しました');
+            }
+
+            const job = await swapResponse.json();
+
+            // Wait for completion via polling (simpler for preview)
+            const result = await waitForJob(job.id);
+
+            if (result.status === 'completed') {
+                document.getElementById('frame-swapped').src = result.output_url;
+                document.getElementById('frame-preview-result').classList.remove('hidden');
+            } else {
+                throw new Error(result.error || 'プレビュー処理に失敗しました');
+            }
+
+        } catch (error) {
+            showError('プレビューに失敗: ' + error.message);
+        } finally {
+            captureBtn.disabled = false;
+            captureLoading.classList.add('hidden');
+        }
+    }
+
+    async function waitForJob(jobId, maxWait = 60000) {
+        const startTime = Date.now();
+        while (Date.now() - startTime < maxWait) {
+            const response = await fetch(`/api/jobs/${jobId}`);
+            if (!response.ok) throw new Error('ジョブの取得に失敗しました');
+
+            const job = await response.json();
+            if (job.status === 'completed') {
+                return { status: 'completed', output_url: `/api/files/${jobId}` };
+            } else if (job.status === 'failed') {
+                return { status: 'failed', error: job.error };
+            }
+
+            // Wait a bit before polling again
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        return { status: 'failed', error: 'タイムアウトしました' };
+    }
+
+    function hideFramePreview() {
+        document.getElementById('frame-preview-result').classList.add('hidden');
+    }
+
+    function proceedWithVideo() {
+        // Hide preview and start full video swap
+        document.getElementById('frame-preview-result').classList.add('hidden');
+        startSwap();
     }
 
     async function loadJobHistory() {
