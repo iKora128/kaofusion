@@ -11,8 +11,8 @@
                     AIを使って顔を入れ替え。画像をドラッグ＆ドロップするだけ。
                 </p>
                 <ul class="steps steps-horizontal">
-                    <li id="step-source" class="step" data-content="1">ソース顔</li>
-                    <li id="step-target" class="step" data-content="2">ターゲット</li>
+                    <li id="step-source" class="step" data-content="1">元の顔</li>
+                    <li id="step-target" class="step" data-content="2">変換先</li>
                     <li id="step-process" class="step" data-content="3">処理</li>
                     <li id="step-done" class="step" data-content="4">完了</li>
                 </ul>
@@ -28,11 +28,11 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="card-title">
                         <span class="badge badge-primary badge-lg">1</span>
-                        ソース顔
+                        元の顔
                     </h2>
                     <span id="source-chip" class="badge badge-ghost">未選択</span>
                 </div>
-                <p class="text-sm text-base-content/60 mb-4">入れ替えたい顔の画像を選択してください。正面向きの明るい写真が最適です。</p>
+                <p class="text-sm text-base-content/60 mb-4">使いたい顔の画像を選択してください。正面向きの明るい写真が最適です。</p>
 
                 <div id="source-dropzone"
                      class="dropzone rounded-xl p-8 text-center cursor-pointer min-h-[240px] flex flex-col items-center justify-center"
@@ -76,11 +76,11 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="card-title">
                         <span class="badge badge-secondary badge-lg">2</span>
-                        ターゲット
+                        変換先
                     </h2>
                     <span id="target-chip" class="badge badge-ghost">未選択</span>
                 </div>
-                <p class="text-sm text-base-content/60 mb-4">顔を入れ替える対象の画像または動画を選択してください。</p>
+                <p class="text-sm text-base-content/60 mb-4">顔を入れ替える画像または動画を選択してください。</p>
 
                 <div id="target-dropzone"
                      class="dropzone rounded-xl p-8 text-center cursor-pointer min-h-[240px] flex flex-col items-center justify-center"
@@ -224,7 +224,7 @@
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="text-center md:text-left">
                     <h3 class="font-semibold text-lg">準備完了？</h3>
-                    <p id="swap-helper" class="text-sm text-base-content/60">ソースとターゲットをアップロードしてください</p>
+                    <p id="swap-helper" class="text-sm text-base-content/60">元の顔と変換先をアップロードしてください</p>
                 </div>
                 <div class="flex gap-3">
                     <button class="btn btn-ghost" onclick="resetApp()">リセット</button>
@@ -368,7 +368,7 @@
                     </label>
                     <input type="range" id="swap-weight" min="0" max="1" step="0.05" value="0.75"
                            class="range range-primary range-sm" oninput="updateSwapWeightLabel(this.value)">
-                    <label class="label"><span class="label-text-alt">低いと元の顔を維持、高いとソース顔を強く反映</span></label>
+                    <label class="label"><span class="label-text-alt">低いと変換先の顔を維持、高いと元の顔を強く反映</span></label>
                 </div>
 
                 <!-- Mask Types -->
@@ -830,7 +830,7 @@
         label.textContent = isProcessing ? '処理中...' : 'スワップ開始';
         helper.textContent = ready
             ? '準備完了！スワップを開始できます'
-            : 'ソースとターゲットをアップロードしてください';
+            : '元の顔と変換先をアップロードしてください';
     }
 
     function setupDropzone(dropzoneId, inputId, type) {
@@ -870,7 +870,7 @@
         const isImage = file.type.startsWith('image/');
 
         if (type === 'source' && !isImage) {
-            showError('ソースは画像ファイルである必要があります');
+            showError('元の顔は画像ファイルである必要があります');
             return;
         }
 
@@ -981,7 +981,7 @@
 
     async function startSwap() {
         if (!sourceId || !targetId) {
-            showError('ソースとターゲットの両方をアップロードしてください');
+            showError('元の顔と変換先の両方をアップロードしてください');
             return;
         }
 
@@ -1265,7 +1265,7 @@
 
     async function captureAndPreview() {
         if (!sourceId) {
-            showError('先にソース画像をアップロードしてください');
+            showError('先に元の顔の画像をアップロードしてください');
             return;
         }
 
